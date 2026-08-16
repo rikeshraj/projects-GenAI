@@ -19,14 +19,16 @@ Every project's `explanation.md` also includes a **"switch to paid resources"** 
 
 Projects are listed in the order they were built. Each row is one downloadable zip containing both the basic and advanced RAG variant for that framework/type combination.
 
-| # | Project | Type | Framework | RAG Variants | Core Tech Stack | Status |
-|---|---|---|---|---|---|---|
-| 1 | [`langchain_chatbot`](./langchain_chatbot) | Chatbot | LangChain | Basic + Advanced | **Basic:** Chroma dense retrieval `RetrievalQA`, Ollama LLM, HF embeddings. **Advanced:** + BM25 hybrid search (`EnsembleRetriever`), LLM query expansion (`MultiQueryRetriever`), LLM re-ranking/compression (`ContextualCompressionRetriever`), history-aware retriever, persisted multi-turn memory (`RunnableWithMessageHistory`) | ✅ Completed |
-| 2 | `langgraph_chatbot` | Chatbot | LangGraph | Basic + Advanced | Graph-based conversational RAG: `StateGraph` nodes for retrieve/generate, checkpointer-based memory (basic); planned advanced additions: conditional routing, query rewriting node, hybrid retrieval, re-ranking | ⏳ Planned |
-| 3 | `llamaindex_chatbot` | Chatbot | LlamaIndex | Basic + Advanced | `VectorStoreIndex` over Chroma, `HuggingFaceEmbedding`, `Ollama` LLM, `ChatEngine` (basic); planned advanced additions: hybrid retriever, node post-processors/re-ranking, sub-question query engine | ⏳ Planned |
-| 4 | `langchain_agent` | Agent | LangChain | Basic + Advanced | Tool-using ReAct-style agent (`create_react_agent` / `AgentExecutor`) with a RAG-retriever tool, Ollama LLM (basic); planned advanced additions: multiple tools (calculator, web search), self-correction/reflection, hybrid retrieval tool | ⏳ Planned |
-| 5 | `langgraph_agent` | Agent | LangGraph | Basic + Advanced | Graph-based tool-calling agent with explicit control flow and state (basic); planned advanced additions: multi-step planning, human-in-the-loop / interrupt points, persistent checkpointed memory across sessions | ⏳ Planned |
-| 6 | `llamaindex_agent` | Agent | LlamaIndex | Basic + Advanced | `ReActAgent` / `FunctionAgent` with a query-engine-as-tool over the RAG index (basic); planned advanced additions: multiple tools, query planning, sub-question decomposition | ⏳ Planned |
+| # | Project | Type | Framework | Core Tech Stack | Status |
+|---|---|---|---|---|---|
+| 1 | [`basic_rag_chatbot`](./) | Chatbot | NA | | ✅ Completed |
+| 2 | [`langchain_chatbot`](./langchain_chatbot) | Chatbot | LangChain | **Basic:** Chroma dense retrieval `RetrievalQA`, Ollama LLM, HF embeddings. **Advanced:** + BM25 hybrid search (`EnsembleRetriever`), LLM query expansion (`MultiQueryRetriever`), LLM re-ranking/compression (`ContextualCompressionRetriever`), history-aware retriever, persisted multi-turn memory (`RunnableWithMessageHistory`) | ✅ Completed |
+| 3 | `langgraph_chatbot` | Chatbot | LangGraph | Graph-based conversational RAG: `StateGraph` nodes for retrieve/generate, checkpointer-based memory (basic); planned advanced additions: conditional routing, query rewriting node, hybrid retrieval, re-ranking | ⏳ Planned |
+| 4 | `llamaindex_chatbot` | Chatbot | LlamaIndex | `VectorStoreIndex` over Chroma, `HuggingFaceEmbedding`, `Ollama` LLM, `ChatEngine` (basic); planned advanced additions: hybrid retriever, node post-processors/re-ranking, sub-question query engine | ⏳ Planned |
+| 5 | `basic_agent` | Agent | NA | | ⏳ Planned |
+| 6 | `langchain_agent` | Agent | LangChain | Tool-using ReAct-style agent (`create_react_agent` / `AgentExecutor`) with a RAG-retriever tool, Ollama LLM (basic); planned advanced additions: multiple tools (calculator, web search), self-correction/reflection, hybrid retrieval tool | ⏳ Planned |
+| 7 | `langgraph_agent` | Agent | LangGraph | Graph-based tool-calling agent with explicit control flow and state (basic); planned advanced additions: multi-step planning, human-in-the-loop / interrupt points, persistent checkpointed memory across sessions | ⏳ Planned |
+| 8 | `llamaindex_agent` | Agent | LlamaIndex | `ReActAgent` / `FunctionAgent` with a query-engine-as-tool over the RAG index (basic); planned advanced additions: multiple tools, query planning, sub-question decomposition | ⏳ Planned |
 
 > Stack details for "Planned" rows describe the intended design and will be finalized (and this table updated) as each project is delivered.
 
