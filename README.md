@@ -1,6 +1,6 @@
 # Terminal RAG Chatbots & Agents
 
-A collection of terminal-based Retrieval-Augmented Generation (RAG) projects — chatbots and agents — built with three frameworks (LangChain, LangGraph, LlamaIndex), each in a **basic** and an **advanced** RAG variant. Every project ships as a self-contained folder/zip with its own `readme.md` (setup & usage) and `explanation.md` (architecture & design rationale).
+A collection of terminal-based Retrieval-Augmented Generation (RAG) projects — chatbots and agents — built four ways: from scratch with **no framework** (pure Python), and with three popular frameworks (**LangChain**, **LangGraph**, **LlamaIndex**). Each of the 4 approaches covers both a chatbot and an agent, each in a **basic** and an **advanced** RAG variant — 8 projects in total. Every project ships as a self-contained folder/zip with its own `readme.md` (setup & usage) and `explanation.md` (architecture & design rationale).
 
 ## Free-by-default policy
 
@@ -15,9 +15,13 @@ Every project in this repo is built to run on **100% free, local resources** by 
 
 Every project's `explanation.md` also includes a **"switch to paid resources"** section with the exact code changes needed to swap in a hosted provider (OpenAI, Anthropic, Google, Cohere, Groq, etc.) if you want stronger models or don't want to run anything locally.
 
+## Chatbot vs Agent
+
+A **chatbot** always retrieves before answering — retrieval is a fixed step in the pipeline. An **agent** is given tools (retrieval being one of them) and decides for itself whether, when, and how many times to use them before answering. See [`chatbot_vs_agent.md`](./chatbot_vs_agent.md) for a full breakdown of how that distinction is implemented in each of the four approaches below.
+
 ## Projects
 
-Projects are listed in the order they were built. Each row is one downloadable zip containing both the basic and advanced RAG variant for that framework/type combination.
+Projects are grouped by type (chatbots first, then agents), and within each type, ordered no framework → LangChain → LangGraph → LlamaIndex. Each row is one downloadable zip containing both the basic and advanced RAG variant for that project.
 
 | # | Project | Type | Framework | Core Tech Stack | Status |
 |---|---|---|---|---|---|
@@ -37,36 +41,37 @@ Projects are listed in the order they were built. Each row is one downloadable z
 ```
 .
 ├── README.md                    # this file
-├── no_framework_chatbot/         # project 1 — pure Python, no framework
+├── chatbot_vs_agent.md           # chatbot vs agent, explained per approach
+├── 1-basic-chatbot/               # no framework, pure Python
 │   ├── readme.md
 │   ├── explanation.md
 │   ├── basic/
 │   └── advanced/
-├── langchain_chatbot/              # project 2
+├── 2-langchain-chatbot/
 │   ├── readme.md
 │   ├── explanation.md
 │   ├── basic/
 │   └── advanced/
-├── langgraph_chatbot/               # project 3 (coming soon)
-├── llamaindex_chatbot/              # project 4 (coming soon)
-├── no_framework_agent/            # project 5 — pure Python, no framework
+├── 3-langgraph-chatbot/            # coming soon
+├── 4-llamaindex-chatbot/           # coming soon
+├── 5-basic-agent/                 # no framework, pure Python
 │   ├── readme.md
 │   ├── explanation.md
 │   ├── basic/
 │   └── advanced/
-├── langchain_agent/                  # project 6 (coming soon)
-├── langgraph_agent/                   # project 7 (coming soon)
-└── llamaindex_agent/                  # project 8 (coming soon)
+├── 6-langchain-agent/              # coming soon
+├── 7-langgraph-agent/              # coming soon
+└── 8-llamaindex-agent/             # coming soon
 ```
 
-> The two `no_framework_*` projects implement the exact same RAG patterns (chunking, dense/hybrid retrieval, re-ranking, memory) as their framework-based counterparts, but written directly against the underlying libraries (`chromadb`, `sentence-transformers`, `rank_bm25`, plain HTTP calls to Ollama) with no LangChain / LlamaIndex / LangGraph involved. They're a good place to see what a framework is actually doing under the hood before using the framework versions.
+> `basic-chatbot` and `basic-agent` implement the exact same RAG patterns (chunking, dense/hybrid retrieval, re-ranking, memory) as their framework-based counterparts, but written directly against the underlying libraries (`chromadb`, `sentence-transformers`, `rank_bm25`, plain HTTP calls to Ollama) with no LangChain / LlamaIndex / LangGraph involved. They're a good place to see what a framework is actually doing under the hood before using the framework versions.
 
 Each project folder is fully self-contained (its own `requirements.txt`, `.env.example`, sample `data/`, and docs) — you can copy any single project folder out on its own and run it independently.
 
 ## Basic vs Advanced, at a glance
 
-- **Basic** — the minimum correct RAG loop for that framework: load → chunk → embed → store → retrieve → generate. Good for learning the framework's core API and for small, simple document sets.
-- **Advanced** — adds the techniques that meaningfully improve real-world RAG quality: hybrid (keyword + semantic) retrieval, query expansion/rewriting, re-ranking/compression, and persistent multi-turn conversational memory. Costs more latency (more LLM calls)  in exchange for better answers on larger or more ambiguous document sets.
+- **Basic** — the minimum correct RAG loop for that approach: load → chunk → embed → store → retrieve → generate (chatbots), or the same loop plus a single tool the LLM can choose to call (agents). Good for learning the approach's core API and for small, simple document sets.
+- **Advanced** — adds the techniques that meaningfully improve real-world RAG quality: hybrid (keyword + semantic) retrieval, query expansion/rewriting, re-ranking/compression, persistent multi-turn conversational memory, and (for agents) additional tools and multi-step tool chaining. Costs more latency (more LLM calls) in exchange for better answers on larger or more ambiguous document sets.
 
 ## Getting started
 
