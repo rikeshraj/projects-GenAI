@@ -1,0 +1,12 @@
+chromadb==0.5.*
+sentence-transformers==3.*
+rank_bm25==0.2.*
+requests==2.*
+pypdf==4.*
+python-dotenv==1.0.*
+
+# No LangChain / LlamaIndex / LangGraph.
+#  - sentence-transformers -> dense embeddings AND the cross-encoder re-ranker
+#  - rank_bm25              -> sparse/keyword retrieval
+#  - chromadb                -> vector storage
+#  - requests                 -> talks to the local Ollama REST API directly
