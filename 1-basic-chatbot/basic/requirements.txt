@@ -1,0 +1,7 @@
+chromadb==0.5.*
+sentence-transformers==3.*
+requests==2.*
+pypdf==4.*
+python-dotenv==1.0.*
+
+# No LangChain / LlamaIndex / LangGraph — this project talks to Chroma, sentence-transformers, and the Ollama REST API directly.
