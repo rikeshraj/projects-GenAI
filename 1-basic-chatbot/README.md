@@ -1,17 +1,12 @@
 # RAG Chatbot — No Framework (Basic + Advanced)
 
-Two terminal-based RAG chatbots built with **plain Python** — no
-LangChain, no LlamaIndex, no LangGraph. Every step (loading documents,
-chunking, embedding, storing/searching vectors, calling the LLM, fusing
-retrieval results, re-ranking, memory) is written directly against the
-underlying libraries/APIs, so you can see exactly what a RAG framework
-is doing under the hood.
+Two terminal-based RAG chatbots built with **plain Python** — no LangChain, no LlamaIndex, no LangGraph. Every step (loading documents, chunking, embedding, storing/searching vectors, calling the LLM, fusing retrieval results, re-ranking, memory) is written directly against the underlying libraries/APIs, so you can see exactly what a RAG framework is doing under the hood.
 
 ## ⚠️ This project currently runs on 100% free resources — no API keys, no cost, no rate limits
 
 | Component | Choice | Why it's free |
 |---|---|---|
-| LLM | **Ollama** (local, default `llama3.2`), called via its REST API with `requests` | Runs entirely on your machine, no account or API key |
+| LLM | **Ollama** (local, default `qwen2.5:0.5b`), called via its REST API with `requests` | Runs entirely on your machine, no account or API key |
 | Embeddings | **HuggingFace `sentence-transformers/all-MiniLM-L6-v2`** | Open-source model, downloaded once and run locally |
 | Vector DB | **Chroma** (`chromadb`, embedded) | Open-source, local disk storage |
 | Sparse/keyword retrieval (advanced only) | **BM25** (`rank_bm25`) | Pure Python, no external service |
@@ -19,20 +14,12 @@ is doing under the hood.
 
 ### Switching to paid resources instead
 
-Because there's no framework abstraction layer, swapping to a paid
-provider means changing a small, explicit set of functions rather than a
-framework's constructor — see the **"Switching to paid resources"**
-section in `explanation.md` for exact code. In short:
+Because there's no framework abstraction layer, swapping to a paid provider means changing a small, explicit set of functions rather than a framework's constructor — see the **"Switching to paid resources"** section in `explanation.md` for exact code. In short:
 
-1. Replace the `call_ollama()` function's `requests.post(...)` call with
-   a call to your paid provider's chat completion endpoint (e.g. OpenAI's
-   `POST /v1/chat/completions`), or use their official Python SDK.
-2. Replace `SentenceTransformer(...).encode(...)` with a call to your
-   paid provider's embeddings endpoint (e.g. OpenAI's
-   `POST /v1/embeddings`).
+1. Replace the `call_ollama()` function's `requests.post(...)` call with a call to your paid provider's chat completion endpoint (e.g. OpenAI's `POST /v1/chat/completions`), or use their official Python SDK.
+2. Replace `SentenceTransformer(...).encode(...)` with a call to your paid provider's embeddings endpoint (e.g. OpenAI's `POST /v1/embeddings`).
 3. Add the relevant API key to `.env` and read it with `os.getenv(...)`.
-4. Re-run `python ingest.py` after changing embeddings — different
-   embedding models are not compatible with an existing index.
+4. Re-run `python ingest.py` after changing embeddings — different embedding models are not compatible with an existing index.
 
 ```
 1-basic-chatbot/
@@ -57,9 +44,8 @@ section in `explanation.md` for exact code. In short:
 1. Install Ollama (free): https://ollama.com
 2. Pull a model:
    ```bash
-   ollama pull llama3.2
+   ollama pull qwen2.5:0.5b
    ```
-   Smaller/faster alternative: `ollama pull llama3.2:1b` or `ollama pull qwen2.5:3b`.
 3. Make sure the Ollama server is running (`ollama serve`, or it starts automatically). Default: `http://localhost:11434`.
 
 ## Basic version
