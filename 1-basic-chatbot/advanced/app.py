@@ -18,7 +18,7 @@ No LangChain / LlamaIndex / LangGraph — every piece (retrieval, fusion,
 re-ranking, memory, the LLM call) is plain Python.
 
 Setup:
-    1. Install Ollama: https://ollama.com  and  ollama pull llama3.2
+    1. Install Ollama: https://ollama.com  and  ollama pull qwen2.5:0.5b
     2. pip install -r requirements.txt
     3. cp .env.example .env
     4. python ingest.py       (indexes ./data)
@@ -48,7 +48,7 @@ HISTORY_DIR = "chat_histories"
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
 RERANKER_MODEL = os.getenv("RERANKER_MODEL", "cross-encoder/ms-marco-MiniLM-L-6-v2")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:0.5b")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 
 DENSE_K = int(os.getenv("DENSE_K", "8"))
