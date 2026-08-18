@@ -1,21 +1,17 @@
 """
 Basic RAG Chatbot — NO FRAMEWORK (pure Python)
 -------------------------------------------------
-Terminal chatbot that retrieves relevant chunks from a Chroma collection
-using sentence-transformers embeddings, and asks a local Ollama model to
-answer using that context. No LangChain, no LlamaIndex, no LangGraph —
-every step (embedding, retrieval, prompt construction, the LLM call) is
-plain Python calling the underlying libraries/APIs directly.
+Terminal chatbot that retrieves relevant chunks from a Chroma collection using sentence-transformers embeddings, and asks a local Ollama model to answer using that context. No LangChain, no LlamaIndex, no LangGraph — every step (embedding, retrieval, prompt construction, the LLM call) is plain Python calling the underlying libraries/APIs directly.
 
 Free resources used (no API key, no cost):
   - LLM:        Ollama, local, called via its REST API directly
-                (default model: llama3.2)
+                (default model: qwen2.5:0.5b)
   - Embeddings: HuggingFace sentence-transformers, local
                 (default: all-MiniLM-L6-v2)
   - Vector DB:  Chroma, local
 
 Setup:
-    1. Install Ollama: https://ollama.com  and  ollama pull llama3.2
+    1. Install Ollama: https://ollama.com  and  ollama pull qwen2.5:0.5b
     2. pip install -r requirements.txt
     3. cp .env.example .env
     4. python ingest.py       (indexes ./data)
@@ -34,7 +30,7 @@ load_dotenv()
 PERSIST_DIR = "chroma_db"
 COLLECTION_NAME = "documents"
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "sentence-transformers/all-MiniLM-L6-v2")
-OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "llama3.2")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:0.5b")
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 TOP_K = int(os.getenv("TOP_K", "4"))
 
