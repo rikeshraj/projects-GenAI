@@ -8,20 +8,11 @@ sentence-transformers
 python-dotenv
 pypdf
 
-# No version pins on purpose: the LangChain ecosystem ships frequent
-# breaking changes (e.g. LangChain 1.0 restructured/removed much of the
+# No version pins on purpose: the LangChain ecosystem ships frequent breaking changes (e.g. LangChain 1.0 restructured/removed much of the
 # legacy `langchain.chains` module), and pins here would go stale fast.
-# Install with `pip install -r requirements.txt`; if something breaks,
-# try `pip install --upgrade -r requirements.txt`.
+# Install with `pip install -r requirements.txt`; if something breaks, try `pip install --upgrade -r requirements.txt`.
 #
-# Note: this project deliberately does NOT depend on the top-level
-# `langchain` package at all — only on langchain-core (stable LCEL
-# primitives), langchain-community (vectorstore/retriever/loader
-# integrations), langchain-huggingface, and langchain-ollama. This avoids
-# breakage from `langchain.chains`/`langchain.retrievers` restructuring,
-# which is what causes errors like
-# `ModuleNotFoundError: No module named 'langchain.chains'` on current
-# LangChain releases.
+# Note: this project deliberately does NOT depend on the top-level `langchain` package at all — only on langchain-core (stable LCEL primitives), langchain-community (vectorstore/retriever/loader integrations), langchain-huggingface, and langchain-ollama. This avoids breakage from `langchain.chains`/`langchain.retrievers` restructuring, which is what causes errors like `ModuleNotFoundError: No module named 'langchain.chains'` on current LangChain releases.
 #
 # Notes on the free stack used in this project:
 #  - langchain-ollama    -> talks to a locally running Ollama server (free LLM, no API key)
