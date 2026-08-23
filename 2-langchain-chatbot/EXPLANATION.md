@@ -34,55 +34,50 @@ Chroma similarity search (top-k dense retrieval, HF embeddings)
 Ollama (local LLM) generates the answer
 ```
 
-Implemented with LangChain's `RetrievalQA.from_chain_type(chain_type="stuff")`. Each question is independent — there's no memory of previous turns. This is the simplest correct RAG loop and a good baseline to compare against.
-
-## Advanced version — architecture
+Bui## Advanced version — architecture
 
 ```
 User question + chat history
      │
      ▼
-History-aware retriever: local LLM rewrites follow-ups into standalone questions
+rewrite_query: local LLM rewrites follow-ups into standalone questions (skipped on the first turn, when there's no history to disambiguate against)
      │
      ▼
-MultiQueryRetriever: local LLM generates 3 paraphrased queries
+hybrid_search: runs the dense (Chroma) and BM25 retrievers separately, merges both result lists and de-duplicates, keeping dense results first
      │
      ▼
-EnsembleRetriever: runs BM25 (keyword) + Chroma (semantic) search, merges/re-ranks
+Top 6 merged results kept, concatenated into context
      │
      ▼
-ContextualCompressionRetriever: local LLM extracts only the relevant sentences from each retrieved chunk (acts as a lightweight re-ranker + trimmer)
+generate_answer: {context} + chat history + question → prompt → Ollama
      │
      ▼
-create_stuff_documents_chain: compressed context + history → prompt
-     │
-     ▼
-Ollama (local LLM) generates the answer, chat history is saved to disk
+Answer printed; chat history updated and saved to disk
 ```
 
+This version is built entirely from plain Python functions and `langchain_core` primitives (`ChatPromptTemplate`, `MessagesPlaceholder`) rather than the higher-level `langchain.chains`/`langchain.retrievers` classes (`create_history_aware_retriever`, `create_retrieval_chain`, `EnsembleRetriever`, `MultiQueryRetriever`, `ContextualCompressionRetriever`) originally used here — those live in the top-level `langchain` package, whose `chains`/`retrievers` modules have been restructured and partly removed across recent LangChain releases (e.g. `ModuleNotFoundError: No module named 'langchain.chains'` on current installs). The manual version below is less "batteries included" but has no dependency on that fragile namespace.
+
 ### Why each piece is there
-- **History-aware retriever** — without it, a follow-up like "what about the Pro plan?" would be searched literally and miss the earlier context ("what about *storage limits*?"). The LLM first rewrites it into a standalone question ("What are the storage limits of the Pro plan?").
-- **Hybrid retrieval (BM25 + dense)** — dense/embedding search is great at matching meaning but can miss exact keywords, product names, or codes. BM25 is the opposite: strong on exact terms, weak on paraphrase. Combining both with `EnsembleRetriever` covers more cases than either alone.
-- **MultiQueryRetriever (query expansion)** — a single phrasing of a question may not lexically or semantically match how the source document is worded. Generating multiple phrasings and searching with each increases the chance of finding the right chunk.
-- **Contextual compression (re-ranking)** — retrieval returns whole chunks, which often contain irrelevant sentences alongside the useful one. An LLM-based extractor trims each chunk down to just the relevant part, which both improves answer precision and keeps the final prompt smaller.
-- **Persisted chat history** — `RunnableWithMessageHistory` keeps an in-memory transcript per session and `save_history()` writes it to `chat_histories/<session_id>.json` after every turn, so a session's conversation isn't lost if the terminal is closed.
+- **`rewrite_query`** — without it, a follow-up like "what about the Pro plan?" would be searched literally and miss the earlier context ("what about *storage limits*?"). The LLM first rewrites it into a standalone question ("What are the storage limits of the Pro plan?"), using `ChatPromptTemplate.from_messages([...])` with `MessagesPlaceholder("chat_history")` so the actual history and question reach the model (not just the static instruction text).
+- **`hybrid_search` (dense + BM25)** — dense/embedding search is great at matching meaning but can miss exact keywords, product names, or codes. BM25 is the opposite: strong on exact terms, weak on paraphrase. Running both and merging their results (de-duplicated by source + content, dense results kept first) covers more cases than either alone. This is a simpler fusion than true Reciprocal Rank Fusion (no score-based re-ordering of the merged list) — see "Extending this project" below for how to upgrade it.
+- **Persisted chat history** — `save_history()` writes the conversation to `chat_histories/<session_id>.json` after every turn (via a plain `ChatMessageHistory` object, not `RunnableWithMessageHistory`), so a session's conversation isn't lost if the terminal is closed.
 
 ## Basic vs Advanced — trade-offs
 
 | | Basic | Advanced |
 |---|---|---|
-| Retrieval | Dense only | Hybrid (BM25 + dense) + query expansion |
-| Re-ranking | None | LLM-based contextual compression |
+| Retrieval | Dense only | Hybrid (dense + BM25, merged) |
+| Re-ranking | None | None (merge order only: dense results first) |
 | Memory | None (single-turn) | Multi-turn, persisted to disk |
-| LLM calls per question | 1 | 4–6 (rewrite, multi-query, compression, answer) |
-| Latency (on local/free LLM) | Low | Higher — several sequential local-model calls |
+| LLM calls per question | 1 | 1 (first turn) or 2 (rewrite + answer, later turns) |
+| Latency (on local/free LLM) | Low | Slightly higher on follow-up questions |
 | Answer quality on ambiguous / follow-up questions | Weaker | Stronger |
 
-The basic version is a good starting point or a low-latency option for small, well-structured document sets, and it's easier on CPU-only Ollama. The advanced version is worth the extra latency when documents are large, questions are conversational, or exact terminology matters (product names, codes, IDs) alongside semantic meaning — the extra LLM calls are still free, just slower on modest hardware.
+The basic version is a good starting point or a low-latency option for small, well-structured document sets, and it's easier on CPU-only Ollama. The advanced version is worth the extra latency when documents are large, questions are conversational, or exact terminology matters (product names, codes, IDs) alongside semantic meaning.
 
 ## ⚠️ Currently free — how to switch to paid resources
 
-**This project is currently configured to run entirely on free, local resources** (Ollama + HuggingFace embeddings + Chroma), as described above. If you'd rather use a paid hosted provider — for a stronger model, lower local hardware requirements, or faster responses — the swap only touches the model/embeddings instantiation. The retrieval logic (Chroma, BM25, chains, memory) stays exactly the same.
+**This project is currently configured to run entirely on free, local resources** (Ollama + HuggingFace embeddings + Chroma), as described above. If you'd rather use a paid hosted provider — for a stronger model, lower local hardware requirements, or faster responses — the swap only touches the model/embeddings instantiation. The retrieval logic (Chroma, BM25, hybrid search, memory) stays exactly the same.
 
 ### 1. Swap the LLM (e.g. to OpenAI)
 ```bash
@@ -131,6 +126,7 @@ The same three-step pattern (install package → swap constructor → add API ke
 ## Extending this project
 - Swap `Chroma` for another free local vector store (e.g. FAISS).
 - Swap the Ollama model for any other model available in the free Ollama library (`ollama pull <model>`), or point `ChatOllama` at another OpenAI-compatible free/local server (e.g. LM Studio, vLLM).
-- Add a real cross-encoder re-ranker (e.g. `sentence-transformers` `CrossEncoder`, also free) in place of `LLMChainExtractor` for a cheaper, non-LLM re-ranking step that doesn't add extra LLM latency.
+- Upgrade `hybrid_search`'s simple merge into true Reciprocal Rank Fusion (score-weighted re-ordering instead of "dense results first") — see `no_framework_chatbot/advanced/app.py`'s hand-written `_rrf_fuse` for a reference implementation using the same idea.
+- Add a cross-encoder re-ranker (e.g. `sentence-transformers` `CrossEncoder`, free, local) after `hybrid_search` to re-score and trim the merged results before they reach the answer prompt — see `langgraph_chatbot/advanced/app.py`'s `retrieve_and_rerank` node for a reference implementation.
 - Add streaming output by using `.stream()` instead of `.invoke()`.
-- If you later want to use a hosted API instead (e.g. for stronger reasoning), the only code that needs to change is the embeddings/LLM instantiation lines — the rest of the pipeline is provider-agnostic.
+- If you later want to use a hosted API instead (e.g. for stronger reasoning), the only code that needs to change is the embeddings/LLM instantiation lines — the rest of the pipeline is provider-agnostic.lt with plain LCEL (`prompt | llm`) from `langchain_core`, `langchain_core` primitives are the stable, version-proof way to compose a retriever + prompt + LLM. Each question is independent — there's no memory of previous turns. This is the simplest correct RAG loop and a good baseline to compare against.
