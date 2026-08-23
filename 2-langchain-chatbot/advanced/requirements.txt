@@ -1,0 +1,33 @@
+langchain-core
+langchain-community
+langchain-huggingface
+langchain-ollama
+langchain-text-splitters
+chromadb
+rank_bm25
+sentence-transformers
+python-dotenv
+pypdf
+
+# No version pins on purpose: the LangChain ecosystem ships frequent
+# breaking changes (e.g. LangChain 1.0 restructured/removed much of the
+# legacy `langchain.chains`/`langchain.retrievers` modules), and pins
+# here would go stale fast. Install with `pip install -r
+# requirements.txt`; if something breaks, try
+# `pip install --upgrade -r requirements.txt`.
+#
+# Note: this project deliberately does NOT depend on the top-level
+# `langchain` package at all — hybrid retrieval, query rewriting, and
+# memory are all implemented directly with plain Python + langchain-core
+# (LCEL) primitives instead of langchain.chains/langchain.retrievers
+# classes like RetrievalQA, EnsembleRetriever, or
+# create_history_aware_retriever. This avoids errors like
+# `ModuleNotFoundError: No module named 'langchain.chains'` on current
+# LangChain releases.
+#
+# Notes on the free stack used in this project:
+#  - langchain-ollama    -> talks to a locally running Ollama server (free LLM, no API key)
+#  - langchain-huggingface + sentence-transformers -> local, free embedding model
+#  - chromadb            -> free, open-source, local vector database
+#  - rank_bm25           -> free, pure-Python sparse (keyword) retriever
+# You also need Ollama itself installed separately: https://ollama.com
