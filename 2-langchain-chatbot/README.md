@@ -15,7 +15,7 @@ Nothing in this project calls a paid API. The only one-time setup cost is instal
 
 ### Switching to paid resources instead
 
-The pipeline is provider-agnostic — swapping in paid services only means changing the model/embeddings instantiation and adding an API key. You do not need to touch the retrieval logic. See the **"Switching to paid resources"** section of `EXPLANATION.md` for the exact code changes; in short:
+The pipeline is provider-agnostic — swapping in paid services only means changing the model/embeddings instantiation and adding an API key. You do **not** need to touch the retrieval logic. See the **"Switching to paid resources"** section of `explanation.md` for the exact code changes; in short:
 
 1. `pip install langchain-openai` (or another provider's LangChain package)
 2. In `app.py` (and `ingest.py` for embeddings), replace:
@@ -28,8 +28,8 @@ The same swap pattern works for Anthropic, Google, Cohere, or any other LangChai
 
 ```
 langchain_chatbot/
-├── README.md
-├── EXPLANATION.md
+├── readme.md
+├── explanation.md
 ├── basic/
 │   ├── app.py            # terminal chat loop (single-turn RAG)
 │   ├── ingest.py          # builds the Chroma vector store from ./data
@@ -51,8 +51,7 @@ langchain_chatbot/
    ```bash
    ollama pull qwen2.5:0.5b
    ```
-   `qwen2.5:0.5b` is already one of the smallest capable models — this is the default used throughout this project. If your machine can spare more RAM and you'd like stronger answers, try
-   `ollama pull qwen2.5:3b` instead.
+   `qwen2.5:0.5b` is already one of the smallest capable models — this is the default used throughout this project. If your machine can spare more RAM and you'd like stronger answers, try `ollama pull qwen2.5:3b` instead.
 3. Make sure the Ollama server is running (it usually starts automatically, or run `ollama serve` manually). It listens on `http://localhost:11434` by default.
 
 ## Basic version
@@ -90,4 +89,4 @@ Drop `.txt`, `.md`, or `.pdf` files into `data/` (either project) and re-run `py
 ## Notes
 - The vector store (`chroma_db/`) and chat histories (`chat_histories/`) are created locally and are safe to delete to reset state.
 - Want to swap in a different free model? Any model pulled into Ollama works — just change `OLLAMA_MODEL` in `.env`. To use a different free embedding model, change `EMBEDDING_MODEL` to any other `sentence-transformers` model name from the HuggingFace Hub.
-- See `EXPLANATION.md` for how the retrieval pipelines work, why the advanced version differs from the basic one, the free-stack choices, and step-by-step instructions for switching to paid resources.
+- See `explanation.md` for how the retrieval pipelines work, why the advanced version differs from the basic one, the free-stack choices, and step-by-step instructions for switching to paid resources.
