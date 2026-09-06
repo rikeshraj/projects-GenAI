@@ -1,0 +1,23 @@
+langgraph
+langchain-core
+langchain-community
+langchain-huggingface
+langchain-ollama
+langchain-text-splitters
+chromadb
+sentence-transformers
+python-dotenv
+pypdf
+
+# No version pins on purpose: the LangGraph/LangChain ecosystem ships
+# frequent breaking changes, and pins here would go stale fast. Install
+# with `pip install -r requirements.txt`; if something breaks, try
+# `pip install --upgrade -r requirements.txt`.
+#
+# Notes on the free stack used in this project:
+#  - langgraph            -> graph-based orchestration (nodes/edges/state), free & local
+#  - langgraph's MemorySaver checkpointer -> free, in-process conversational memory
+#  - langchain-ollama      -> talks to a locally running Ollama server (free LLM, no API key)
+#  - langchain-huggingface + sentence-transformers -> local, free embedding model
+#  - chromadb              -> free, open-source, local vector database
+# You also need Ollama itself installed separately: https://ollama.com
