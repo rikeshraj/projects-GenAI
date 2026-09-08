@@ -1,0 +1,35 @@
+langgraph
+langgraph-checkpoint-sqlite
+langchain-core
+langchain-community
+langchain-huggingface
+langchain-ollama
+langchain-text-splitters
+chromadb
+rank_bm25
+sentence-transformers
+python-dotenv
+pypdf
+
+# No version pins on purpose: the LangGraph/LangChain ecosystem ships
+# frequent breaking changes, and pins here would go stale fast. Install
+# with `pip install -r requirements.txt`; if something breaks, try
+# `pip install --upgrade -r requirements.txt`.
+#
+# Note: this project deliberately does NOT depend on the top-level
+# `langchain` package at all (e.g. no langchain.retrievers.EnsembleRetriever)
+# — hybrid retrieval is implemented directly with hand-written Reciprocal
+# Rank Fusion instead. This avoids breakage from the `langchain` package's
+# restructuring across versions.
+#
+# Notes on the free stack used in this project:
+#  - langgraph                    -> graph-based orchestration with conditional routing
+#  - langgraph-checkpoint-sqlite  -> free, local SQLite-backed conversational memory
+#                                    (persists across restarts, unlike the basic version's
+#                                    in-memory-only MemorySaver)
+#  - langchain-ollama              -> talks to a locally running Ollama server (free LLM)
+#  - langchain-huggingface + sentence-transformers -> local, free embeddings
+#  - sentence-transformers (CrossEncoder) -> local, free re-ranking model
+#  - rank_bm25                     -> free, pure-Python sparse (keyword) retriever
+#  - chromadb                      -> free, open-source, local vector database
+# You also need Ollama itself installed separately: https://ollama.com
