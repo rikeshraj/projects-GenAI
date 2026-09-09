@@ -1,0 +1,23 @@
+llama-index-core
+llama-index-llms-ollama
+llama-index-embeddings-huggingface
+llama-index-vector-stores-chroma
+llama-index-retrievers-bm25
+chromadb
+sentence-transformers
+python-dotenv
+pypdf
+
+# No version pins on purpose: llama-index, chromadb, and the sentence-
+# transformers/huggingface ecosystem move fast and pinned versions here
+# would go stale quickly. Install with:
+#   pip install -r requirements.txt
+# and if you hit a version-compatibility error, try:
+#   pip install --upgrade -r requirements.txt
+# Notes on the free stack used in this project:
+#  - llama-index-llms-ollama          -> talks to a locally running Ollama server (free LLM)
+#  - llama-index-embeddings-huggingface + sentence-transformers -> local, free embeddings
+#    (sentence-transformers is also used for the cross-encoder re-ranker)
+#  - llama-index-vector-stores-chroma + chromadb -> free, open-source, local vector database
+#  - llama-index-retrievers-bm25       -> free, local sparse/keyword retrieval
+# You also need Ollama itself installed separately: https://ollama.com
