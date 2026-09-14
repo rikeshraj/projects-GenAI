@@ -6,7 +6,7 @@ A collection of terminal-based Retrieval-Augmented Generation (RAG) projects —
 
 Every project in this repo is built to run on **100% free, local resources** by default — no API keys, no cost, no rate limits:
 
-| Layer | Default free choice |
+| Layer | Default free choice | 
 |---|---|
 | LLM | **Ollama** (local open-weight models, e.g. `llama3.2`) |
 | Embeddings | **HuggingFace `sentence-transformers`** (local, e.g. `all-MiniLM-L6-v2`) |
